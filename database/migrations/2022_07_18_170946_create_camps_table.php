@@ -14,7 +14,7 @@ class CreateCampsTable extends Migration
     public function up()
     {
         Schema::create('camps', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('title');
             $table->string('slug')->nullable();
             $table->decimal('price', 16, 2)->unsigned();

@@ -14,8 +14,8 @@ class CreateCampBenefitsTable extends Migration
     public function up()
     {
         Schema::create('camp_benefits', function (Blueprint $table) {
-            $table->id();
-            $table->string('camp_id');
+            $table->increments('id');
+            $table->integer('camp_id')->unsigned();
             $table->string('name');
             $table->timestamps();
 

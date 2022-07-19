@@ -14,9 +14,9 @@ class CreateCheckoutsTable extends Migration
     public function up()
     {
         Schema::create('checkouts', function (Blueprint $table) {
-            $table->id();
-            $table->string('user_id');
-            $table->string('camp_id');
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->integer('camp_id')->unsigned();
             $table->string('card_number', 20);
             $table->string('cvc', 3);
             $table->dateTime('expired_date');
