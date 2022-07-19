@@ -21,13 +21,13 @@ class CreateUserProfilesTable extends Migration
             $table->string('phone_number');
             $table->timestamps();
 
-            $table->foreignId('user_id')
+            $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreignId('file_id')
+            $table->foreign('file_id')
                 ->references('id')
                 ->on('files')
                 ->onUpdate('cascade')
