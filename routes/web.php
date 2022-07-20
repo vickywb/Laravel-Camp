@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CheckoutController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +17,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('index');
+})->name('home');
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/login', [AuthController::class, 'login'])->name('login');
+
+Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
+Route::get('/success-checkout', [CheckoutController::class, 'successCheckout'])->name('success-checkout');
