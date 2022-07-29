@@ -20,7 +20,7 @@ class AdminSeeder extends Seeder
             'email' => 'admin@lara.camp',
             'password' => Hash::make('secret'),
             'email_verified_at' => date('Y-m-d H:i:s', time()),
-            'is_admin' => true,
+            'role' => User::ROLE_ADMIN,
         ]);
 
         $admin->userProfile()->create([
