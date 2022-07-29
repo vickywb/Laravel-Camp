@@ -35,13 +35,13 @@ body {
 }
 
 .login-user .right .people {
-  margin-top: 100px;
+  margin-top: 50px;
   height: 170px;
 }
 
 .login-user .right .logo {
   height: 42px;
-  margin-bottom: 100px;
+  margin-bottom: 30px;
 }
 
 .login-user .right .btn-border {
@@ -51,11 +51,22 @@ body {
 }
 
 .login-user .right .btn-google-login {
-  margin-top: 40px;
+  margin-top: 30px;
+  margin-right: 0px;
+  width: 380px;
 }
 
 .login-user .right .btn-google-login .icon {
-  margin-right: 8px;
+  margin-right: 5px;
+}
+
+.login-user .right .btn-facebook-login {
+  margin-top: 0px;
+  width: 380px;
+}
+
+.login-user .right .btn-facebook-login .icon {
+  margin-right: 5px;
 }
 
 .login-user .left {

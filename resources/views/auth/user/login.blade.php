@@ -1,50 +1,98 @@
-<!doctype html>
-<html lang="en">
+@extends('layouts.login')
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@section('content')
+<section class="login-user">
+    <div class="left">
+        <img src="{{ asset('images/ill_login_new.png') }}" alt="">
+    </div>
+    <div class="right">
+        <img src="{{ asset('images/logo.png') }}" class="logo" alt="">
+        <h1 class="header-third">
+            Start Today
+        </h1>
+        <p class="subheader">
+            Because tomorrow become never
+        </p>
+        <form action="">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}" type="text/css">
+            <div class="row mb-3">
+                <label for="email" class="form-label">{{ __('Email Address') }}</label>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+                <div class="col-md-6">
+                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
+                        name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
+                        style="border-radius: 1rem;">
 
-    <title>Laracamp by BuildWith Angga</title>
-</head>
+                    @error('email')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+            </div>
 
-<body>
+            <div class="row mb-3">
+                <label for="password" class="form-label">{{ __('Password') }}</label>
 
-    <section class="login-user">
-        <div class="left">
-            <img src="{{ asset('images/ill_login_new.png') }}" alt="">
-        </div>
-        <div class="right">
-            <img src="{{ asset('images/logo.png') }}" class="logo" alt="">
-            <h1 class="header-third">
-                Start Today
-            </h1>
-            <p class="subheader">
-                Because tomorrow become never
-            </p>
-            <p>
-                <a class="btn btn-border btn-google-login" href="#">
-                    <img src="{{ asset('images/ic_google.svg') }}" class="icon" alt=""> Sign In with Google
-                </a>
-            </p>
-            <img src="{{ asset('images/people.png') }}" class="people" alt="">
-        </div>
-    </section>
+                <div class="col-md-6">
+                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
+                        name="password" required autocomplete="current-password" style="border-radius: 1rem;"
+                    >
 
-    <!-- Optional JavaScript; choose one of the two! -->
+                    @error('password')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+            </div>
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+            <div class="row mb-3">
+                <div class="col-md-3 mt-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
 
-</body>
+                        <label class="form-check-label" for="remember">
+                            {{ __('Remember Me') }}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    @if (Route::has('password.request'))
+                        <a class="btn btn-link" href="{{ route('password.request') }}">
+                            {{ __('Forgot Your Password?') }}
+                        </a>
+                    @endif
+                </div>
+            </div>
+            
+            <div class="row mb-0">
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-primary col-md-12">
+                        {{ __('Login') }}
+                    </button>
 
-</html>
+                    {{-- @if (Route::has('password.request'))
+                        <a class="btn btn-link" href="{{ route('password.request') }}">
+                            {{ __('Forgot Your Password?') }}
+                        </a>
+                    @endif --}}
+                </div>
+            </div>
+        </form>
+        <p class="text-right mt-3 mb-0">Don't you have an account yet? <a href="">Register Now!!</a></p>
+        <p>
+            <a class="btn btn-border btn-google-login" href="{{ route('login-user.google') }}">
+                <img src="{{ asset('images/ic_google.svg') }}" class="icon" alt=""> Sign in With Google
+            </a>
+        </p>
+        <p>
+            <a class="btn btn-border btn-facebook-login" href="{{ route('login-user.facebook') }}">
+                <img src="{{ asset('images/ic_facebook4.svg') }}" class="icon" alt=""> Sign in With Facebook
+            </a>
+        </p>
+        <img src="{{ asset('images/people.png') }}" class="people" alt="">
+    </div>
+</section>
+
+@endsection

@@ -15,9 +15,6 @@
 </head>
 
 <body>
-    {{-- Navbar --}}
-    @include('includes.auth-navbar')
-
     {{-- Page Content --}}
     @yield('content')
 
