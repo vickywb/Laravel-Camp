@@ -1,4 +1,4 @@
-@extends('layouts.auth')
+@extends('layouts.auth-user')
 
 @section('content')
 <section class="dashboard my-5">

@@ -9,11 +9,7 @@ class UserController extends Controller
 {
     public function index()
     {   
-        $inputs = User::all();
-
-        return view('user.dashboard', [
-            'inputs' => $inputs
-        ]);
+        return view('user.dashboard');
     }
 
     public function create()

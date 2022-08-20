@@ -29,7 +29,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="right: 0, left: auto;">
                         <li>
-                            <a href="{{ route('user.dashboard') }}" class="dropdown-item">My Dashboard</a>
+                            <a href="#" class="dropdown-item">My Dashboard</a>
                         </li>
                         <li>
                             <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit()">Sign Out</a>
@@ -39,15 +39,6 @@
                         </li>
                     </ul>
                 </div>
-            @else
-                <div class="d-flex">
-                    <a href="{{ route('login') }}" class="btn btn-master btn-secondary me-3">
-                        Sign In
-                    </a>
-                    <a href="{{ route('user.register') }}" class="btn btn-master btn-primary">
-                        Sign Up
-                    </a>
-                </div>  
             @endauth
         </div>
     </div>

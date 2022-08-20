@@ -13,8 +13,8 @@
         <p class="subheader">
             Because tomorrow become never
         </p>
-        <form action="">
-
+        <form action="{{ route('user.login') }}" method="POST">
+            @csrf
             <div class="row mb-3">
                 <label for="email" class="form-label">{{ __('Email Address') }}</label>
 
@@ -80,14 +80,14 @@
                 </div>
             </div>
         </form>
-        <p class="text-right mt-3 mb-0">Don't you have an account yet? <a href="">Register Now!!</a></p>
+        <p class="text-right mt-3 mb-0">Don't you have an account yet? <a href="{{ route('user.register') }}">Register Now!!</a></p>
         <p>
-            <a class="btn btn-border btn-google-login" href="{{ route('login-user.google') }}">
+            <a class="btn btn-border btn-google-login" href="{{ route('user.google-login') }}">
                 <img src="{{ asset('images/ic_google.svg') }}" class="icon" alt=""> Sign in With Google
             </a>
         </p>
         <p>
-            <a class="btn btn-border btn-facebook-login" href="{{ route('login-user.facebook') }}">
+            <a class="btn btn-border btn-facebook-login" href="{{ route('user.facebook-login') }}">
                 <img src="{{ asset('images/ic_facebook4.svg') }}" class="icon" alt=""> Sign in With Facebook
             </a>
         </p>

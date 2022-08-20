@@ -3,33 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
+use App\Models\Provider;
 use App\Models\User;
-use App\Processor\ProcessUploadFile;
-use App\Repositories\FileRepository;
 use App\Repositories\UserRepository;
 use Laravel\Socialite\Facades\Socialite;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class OAuthController extends Controller
 {
-    private $fileRepository;
     private $userRepository;
 
     public function __construct(
-        FileRepository $fileRepository,
         UserRepository $userRepository    
     )
     {
-        $this->fileRepository = $fileRepository;
         $this->userRepository = $userRepository;
-    }
-
-    public function login()
-    {
-        return view('auth.login');
     }
 
     public function googleLogin()
@@ -39,79 +29,58 @@ class OAuthController extends Controller
 
     public function handleGoogleProviderCallback(Request $request)
     {
-        $callBack = Socialite::driver('google')->stateless()->user();
-        // dd($callBack);
-        $user = User::where('email', $callBack->email)->first();
-        $avatar = $callBack->getAvatar();
-        $userId = $callBack->getId();
+        $socialProvider = Socialite::driver('google')->stateless()->user();
+        $user = $this->userRepository->findByColumn($socialProvider->email, 'email');
+        $userId = $socialProvider->getId();
+        $avatar = Provider::where('avatar', $socialProvider->avatar)->first();
+        $fileContents = file_get_contents($socialProvider->getAvatar());
 
+        if (!$avatar) {
+            $fileName = 'avatar' . '/' . $userId . time();
+            $extension = 'jpg';
+            //Define the path by wich we will store the new image
+            $fullFileName = 'file' . '/' . 'google' . '/' . $fileName . '.' . $extension;
+            
+            Storage::put($fullFileName, (string)$fileContents, 'public');
 
-        // $data = [
-        //     'name' => $callBack->name,
-        //     'email' => $callBack->email,
-        //     'email_verified_at' => date('Y-m-d H:i', time()),
-        // ];
-
-        // $fileContents = file_get_contents($avatar);
-        // dd($fileContents);
-        if (!empty($avatar)) {
-            $fileName = $userId . time() . '.jpg';
-            $path = 'google/avatar';
-
-            $fileStore = File::create([
-                'location' => 'google/' . $fileName
+            // The filename to save in the database.
+            $uploadedFile = File::create([
+                'location' => $fullFileName
             ]);
 
-            dd($fileStore->id);
+            $request->merge([
+                'file_id' => $uploadedFile->id
+            ]);
         }
 
-        // if (!$user) {
-        //     $userProvider = User::create($data);
+        $data = [
+            'name' => $socialProvider->name,
+            'email' => $socialProvider->email,
+            'email_verified_at' => date('Y-m-d H:i', time()),
+        ];
 
-        //     $userProvider->profile()->create()
+        $dataFileId = $request->only([
+            'file_id'
+        ]);
 
-        //     return 'create new user';
-        // }
+        if (!$user) {
+            $user = User::updateOrCreate($data);
 
-        // return 'email already taken';
+            $user->userProfile()->create($dataFileId);
 
-        // $userId = $callBack->getId();
-        // $avatar = $callBack->getAvatar();
-        // // dd($callBack);
-        // if ($avatar) {
-        //     $fileName = "google/avatar/" . $userId .'/'. time() . ".jpg"; 
-        //     // The filename to save in the database.
-        //     dd($fileName);
-        // }
+            $user->providers()->create([
+                'provider_user_id' => $socialProvider->getId(),
+                'provider_name' => Provider::GOOGLE_PROVIDER,
+                'name' => $socialProvider->name,
+                'email' => $socialProvider->email,
+                'avatar' => $socialProvider->avatar,
+                'email_verified_at' => date('Y-m-d H:i:s', time())
+            ]);
+        }
 
-        // if ($callBack->getAvatar()) {
-        //     $fileName = "google/avatar/" . time() . ".jpg";
+        Auth::login($user,true);
 
-        //     dd($fileName());
-
-        //     new ProcessUploadFile($fileName, [
-        //         'field_name' => 'location',
-        //         'extension' => $request->file($fileName)->getClientOriginalExtension(),
-        //         'location' => 'user/'
-        //     ], $request);
-
-        //     // $uploadedFile = $this->fileRepository->store($request->only('location'));
-        //     // $request->merge([
-        //     //     'file_id' => $uploadedFile->id
-        //     // ]);
-        // }
-
-        // $data = [
-        //     'name' => $callBack->name,
-        //     'email' => $callBack->email,
-        //     'images' => $callBack->avatar,
-        //     'email_verified_at' => date('Y-m-d H:i', time()),
-        // ];
-        // dd($data);
-
-        // $user = User::firstOrCreate($data);
-
-        // return $data;
+        return redirect()->route('user.dashboard');
     }
 
     public function facebookLogin()
@@ -121,43 +90,58 @@ class OAuthController extends Controller
 
     public function handleFacebookProviderCallback(Request $request)
     {   
-        $callBack = Socialite::driver('facebook')->stateless()->user();
-        $userId = $callBack->getId();
-        $avatar = $callBack->avatar . "&access_token={$callBack->token}";
-        // dd($callBack->token);
-        if ($avatar) {
-            $fileName = 'facebook/avatar/' . $userId .'/' . time() . '.jpg'; 
+        $socialProvider = Socialite::driver('facebook')->stateless()->user();
+        $user = $this->userRepository->findByColumn($socialProvider->email, 'email');
+        $userId = $socialProvider->getId();
+        $avatar = Provider::where('avatar', $socialProvider->avatar)->first();
+        $fileContents = file_get_contents($socialProvider->avatar_original . "&access_token={$socialProvider->token}");
+
+        if (!$avatar) {
+            $fileName = 'avatar' . '/' . $userId . time();
+            $extension = 'jpg';
+            //Define the path by wich we will store the new image
+            $fullFileName = 'file' . '/' . 'facebook' . '/' . $fileName . '.' . $extension;
+            
+            Storage::put($fullFileName, (string)$fileContents, 'public');
+
             // The filename to save in the database.
-            dd($fileName);
-            // new ProcessUploadFile($fileName, [
-            //     'field_name' => 'location',
-            //     'extension' => $request->file($fileName)->getClientOriginalExtension(),
-            //     'location' => 'user/'
-            // ], $request);
+            $uploadedFile = File::create([
+                'location' => $fullFileName
+            ]);
 
-            // $uploadedFile = $this->fileRepository->store($request->only('location'));
-            // $request->merge([
-            //     'file_id' => $uploadedFile->id
-            // ]);
-            // dd($fileName);
+            $request->merge([
+                'file_id' => $uploadedFile->id
+            ]);
         }
-        // dd($callBack->avatar);
+
+        $data = [
+            'name' => $socialProvider->name,
+            'email' => $socialProvider->email,
+            'email_verified_at' => date('Y-m-d H:i', time()),
+        ];
+
+        $dataFileId = $request->only([
+            'file_id'
+        ]);
+
+        if (!$user) {
+         $user = User::updateOrCreate($data);
+         $user->userProfile()->create($dataFileId);
         
-        // if ($callBack->getAvatar()) {
-        //     $fileName = "google/avatar/" . time() . ".jpg";
+         $user->providers()->create([
+            'user_id' => $data,
+            'provider_user_id' => $socialProvider->getId(),
+            'provider_name' => Provider::FACEBOOK_PROVIDER,
+            'name' => $socialProvider->name,
+            'email' => $socialProvider->email,
+            'avatar' => $socialProvider->avatar,
+            'email_verified_at' => date('Y-m-d H:i:s', time())
+          ]);
+        }
 
-        //     dd($fileName());
+        Auth::login($user,true);
 
-        // }
-
-        // $data = [
-        //     'name' => $callBack->name,
-        //     'email' => $callBack->email,
-        //     'images' => $callBack->avatar,
-        //     'email_verified_at' => date('Y-m-d H:i', time()),
-        // ];
-
-        // dd($data);
+        return redirect()->route('user.dashboard');
     }
 }
  

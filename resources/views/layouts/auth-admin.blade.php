@@ -16,7 +16,7 @@
 
 <body>
     {{-- Navbar --}}
-    @include('includes.navbar')
+    @include('includes.auth-navbar-admin')
 
     {{-- Page Content --}}
     @yield('content')

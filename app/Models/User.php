@@ -24,8 +24,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'is_admin',
-        'occupation'
+        'role',
+        'occupation',
+        'email_verified_at'
+
     ];
 
     /**
@@ -58,4 +60,8 @@ class User extends Authenticatable
         return $this->hasMany(Checkout::class);
     }
 
+    public function providers()
+    {
+        return $this->hasMany(Provider::class);
+    }
 }

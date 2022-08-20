@@ -16,10 +16,14 @@
 
 <body>
     {{-- Navbar --}}
-    @include('includes.auth-navbar')
+    @include('includes.auth-navbar-user')
 
     {{-- Page Content --}}
     @yield('content')
 
+    {{-- Page Javascript --}}
+    @yield('javascript')
+    {{-- Bootstrap Script --}}
+    @include('includes.script')
 </body>
 </html>
