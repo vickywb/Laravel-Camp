@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\User\AfterRegister;
 use App\Models\File;
 use App\Models\Provider;
 use App\Models\User;
@@ -9,6 +10,7 @@ use App\Repositories\UserRepository;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class OAuthController extends Controller
@@ -76,6 +78,8 @@ class OAuthController extends Controller
                 'avatar' => $socialProvider->avatar,
                 'email_verified_at' => date('Y-m-d H:i:s', time())
             ]);
+
+            Mail::to($user)->send(new AfterRegister($user));
         }
 
         Auth::login($user,true);
