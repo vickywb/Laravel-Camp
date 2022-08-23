@@ -23,6 +23,7 @@
 
     {{-- Page Javascript --}}
     @yield('javascript')
+    
     {{-- Bootstrap Script --}}
     @include('includes.script')
 </body>

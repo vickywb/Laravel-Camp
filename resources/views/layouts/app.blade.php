@@ -21,6 +21,9 @@
     {{-- Page Content --}}
     @yield('content')
 
+    {{-- Javascript --}}
+    @yield('javascript')
+    
     {{-- Bootstrap Script --}}
     @include('includes.script')
 </body>
