@@ -17,9 +17,11 @@ class CreateCheckoutsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('camp_id')->unsigned();
+            $table->string('name');
+            $table->string('email');
             $table->string('card_number', 20);
             $table->string('cvc', 3);
-            $table->dateTime('expired_date');
+            $table->string('expired_date');
             $table->boolean('is_paid')->default(false);
             $table->timestamps();
 
