@@ -1,5 +1,5 @@
 @if (session('success'))
-<div class="alert alert-dismissible bg-primary d-flex flex-column flex-sm-row w-100 p-5">
+<div class="alert alert-dismissible bg-primary d-flex flex-column flex-sm-row w-100 py-4 px-5">
     <div class="d-flex flex-column text-light pe-0 pe-sm-10">
         <h4 class="mb-2 text-light">Success</h4>
         <span>{{ session('success') }}</span>
@@ -18,7 +18,7 @@
 </div>
 @endif
 @if (session('fail') || session('errors'))
-<div class="alert alert-dismissible bg-danger d-flex flex-column flex-sm-row w-100 p-5">
+<div class="alert alert-dismissible bg-danger d-flex flex-column flex-sm-row w-100 py-4 px-5">
     <div class="d-flex flex-column text-light pe-0 pe-sm-10">
         <h4 class="mb-2 text-light">Error</h4>
         @if(session('fail'))
