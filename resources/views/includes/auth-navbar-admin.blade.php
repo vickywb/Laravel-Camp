@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">
+        <a class="navbar-brand" href="{{ route('admin.dashboard') }}">
             <img src="{{ asset('images/logo.png') }}" alt="">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,7 +12,7 @@
                     <a class="nav-link active" aria-current="page" href="#">Program</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Mentor</a>
+                    <a class="nav-link" href="{{ route('admin.camp.index') }}">Camp</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Pricing</a>
@@ -25,11 +25,11 @@
                 <div class="d-flex user-logged nav-item dropdown no-arrow">
                     <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         Halo, {{ auth()->user()->name }} !
-                        <img src="{{ auth()->user()->fileUrl ?? asset('images/user_photo.png') }}" class="user-photo" alt="">
+                        <img src="{{ auth()->user()->userProfile->fileUrl ?? asset('images/user_photo.png') }}" class="user-photo rounded-circle" alt="">
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="right: 0, left: auto;">
                         <li>
-                            <a href="#" class="dropdown-item">My Dashboard</a>
+                            <a href="{{ route('admin.dashboard') }}" class="dropdown-item">My Dashboard</a>
                         </li>
                         <li>
                             <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit()">Sign Out</a>
