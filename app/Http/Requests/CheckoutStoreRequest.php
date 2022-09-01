@@ -25,7 +25,7 @@ class CheckoutStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email',
             'cvc' => 'required|numeric',
             'card_number' => 'required|numeric|digits_between:8,16',
             'expired_date' => 'required',

@@ -10,8 +10,16 @@ class Checkout extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'camp_id', 'card_number', 'cvc', 'expired_date', 'is_paid'
+        'user_id', 'camp_id', 'name', 'email', 'card_number', 'cvc',
+        'expired_date', 'is_paid'
     ];
+
+    // protected $casts = [
+    //     'expired_date' => 'datetime',
+    // ];
+
+    // const PENDING = 'pending';
+    // const SUCCESS = 'success';
 
     //Relationship
     public function user()
@@ -23,4 +31,10 @@ class Checkout extends Model
     {
         return $this->belongsTo(Camp::class);
     }
+
+    // //Attribute
+    // public function getExpiredAttribute($value)
+    // {
+    //     $this->attribute['expired_date'] = date('Y-m-t', strtotime($value));
+    // }
 }

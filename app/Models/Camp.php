@@ -19,4 +19,16 @@ class Camp extends Model
     {
         return $this->hasMany(CampBenefit::class);
     }
+
+    //Attribute
+    public function getIsRegisteredAttribute()
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return false;
+        }
+
+        return Checkout::whereCampId($this->id)->whereUserId($user->id)->exists();
+    }
 }
