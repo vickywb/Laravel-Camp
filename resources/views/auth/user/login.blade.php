@@ -13,7 +13,8 @@
         <p class="subheader">
             Because tomorrow become never
         </p>
-        <form action="{{ route('user.login') }}" method="POST">
+        @include('partials.messages')
+        <form action="{{ route('login.user') }}" method="POST">
             @csrf
             <div class="row mb-3">
                 <label for="email" class="form-label">{{ __('Email Address') }}</label>
@@ -82,7 +83,7 @@
         </form>
         <p class="text-right mt-3 mb-0">Don't you have an account yet? <a href="{{ route('user.register') }}">Register Now!!</a></p>
         <p>
-            <a class="btn btn-border btn-google-login" href="{{ route('user.google-login') }}">
+            <a class="btn btn-border btn-google-login" href="{{ route('google.login') }}">
                 <img src="{{ asset('images/ic_google.svg') }}" class="icon" alt=""> Sign in With Google
             </a>
         </p>
