@@ -40,6 +40,12 @@ class AuthController extends Controller
     {
         $user = $this->userRepository->findByColumn($request->email, 'email');
         
+        if ($user->role != 2) {
+            return redirect()->back()->withErrors([
+                'message' => 'This is User Area.'
+            ]);
+        }
+
         if (!$user) {
             return redirect()->back()->withErrors([
                 'message' => 'Username and Password did not match.'
