@@ -2,21 +2,20 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Camp;
 
-class UserRepository
+class CampRepository 
 {
     private $model;
 
-    public function __construct(User $model)
+    public function __construct(Camp $model)
     {
         $this->model = $model;
     }
 
     public function get($params = [])
     {
-        $users = $this->model
+        $camps = $this->model
             ->when(!empty($params['with']), function ($query) use ($params) {
                 return $query->with($params['with']);
             })
@@ -24,10 +23,10 @@ class UserRepository
                 return $query->orderByRaw($params['order']);
             });
         if (!empty($params['pagination'])) {
-            return $users->paginate($params['pagination'], ['*'], isset($params['pagination_name']) ? $params['pagination_name'] : 'page');
+            return $camps->paginate($params['pagination'], ['*'], isset($params['pagination_name']) ? $params['pagination_name'] : 'page');
         }
 
-        return $users->get();
+        return $camps->get();
     }
 
     public function findByColumn($value, $column)
@@ -35,16 +34,10 @@ class UserRepository
         return $this->model->where($column, $value)->first();
     }
 
-    public function store(User $user)
+    public function store(Camp $camp)
     {
-        if (request()->filled('password')) {
-            $user->password = Hash::make($user->password);
-        } else {
-            $user->password = $user->getRawOriginal('password');
-        }
+       $camp->save();
 
-        $user->save();
-        
-        return $user;
+        return $camp;
     }
 }
