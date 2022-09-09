@@ -10,8 +10,8 @@ class Checkout extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'camp_id', 'name', 'email', 'card_number', 'cvc',
-        'expired_date', 'is_paid'
+        'user_id', 'camp_id', 'name', 'email', 'payment_status', 'midtrans_url',
+        'midtrans_booking_code'
     ];
 
     // protected $casts = [

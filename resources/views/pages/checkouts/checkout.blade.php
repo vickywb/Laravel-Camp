@@ -49,40 +49,24 @@
                                 </span>
                                 @enderror
                             </div>
-                            <div class="mb-4">
-                                <label for="InputCardNumber" class="form-label">Card Number</label>
-                                <input type="text" pattern="\d*" maxlength="20" name="card_number" class="form-control @error('card_number') is-invalid @enderror" id="InputCardNumber" value="{{ old('card_number') }}">
-                                @error('card_number')
+                            {{-- <div class="mb-4">
+                                <label for="InputPhoneNumber" class="form-label">Phone Number</label>
+                                <input type="text" pattern="\d*" maxlength="20" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" id="InputPhoneNumber" value="{{ old('phone_number') }}">
+                                @error('phone_number')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                                 @enderror
                             </div>
-                            <div class="mb-5">
-                                <div class="row">
-                                    <div class="col-lg-6 col-12">
-                                        <label for="datepicker" class="form-label">Expired</label>
-                                        <div class="input-append date" id="datepicker">
-                                            <input type="text" name="expired_date" class="form-control @error('expired_date') is-invalid @enderror">
-                                            <span class="add-on"></span>
-                                            @error('expired_date')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-12">
-                                        <label for="InputCVC" class="form-label">CVC</label>
-                                        <input type="text" pattern="\d*" maxlength="3" name="cvc" class="form-control @error('cvc') is-invalid @enderror" id="InputCVC">
-                                        @error('cvc')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="mb-4">
+                                <label for="address" class="form-label">Address</label>
+                                <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" id="address" value="{{ old('address') }}">
+                                @error('address')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div> --}}
                             <button type="submit" class="w-100 btn btn-primary">Pay Now</button>
                             <p class="text-center subheader mt-4">
                                 <img src="{{ asset('images/ic_secure.svg') }}" alt=""> Your payment is secure and encrypted.
