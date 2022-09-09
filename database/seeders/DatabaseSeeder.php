@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             CampSeeder::class,
-            CampBenefitSeeder::class
+            CampBenefitSeeder::class,
+            UserSeeder::class
         ]);
         // \App\Models\User::factory(10)->create();
     }
