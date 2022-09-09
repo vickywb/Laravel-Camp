@@ -16,16 +16,23 @@ class CampSeeder extends Seeder
     {
         $camps = [
             [
-                'title' => 'Learning Code Addicted',
-                'slug' => 'learning-code-addicted',
-                'price' => 300,
+                'title' => 'New Member',
+                'slug' => 'new-member',
+                'price' => 150000,
                 // 'created_at' => date('Y-m-d H:i:s', time()),
                 // 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                'title' => 'New Member',
-                'slug' => 'new-member',
-                'price' => 150,
+                'title' => 'Middle Coding Addicted',
+                'slug' => 'middle-coding-addicted',
+                'price' => 300000,
+                // 'created_at' => date('Y-m-d H:i:s', time()),
+                // 'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                'title' => 'Senior Coding Addicted',
+                'slug' => 'senior-coding-addicted',
+                'price' => 500000,
                 // 'created_at' => date('Y-m-d H:i:s', time()),
                 // 'updated_at' => date('Y-m-d H:i:s', time())
             ]
