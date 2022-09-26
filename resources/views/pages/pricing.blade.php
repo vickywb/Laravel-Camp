@@ -29,35 +29,15 @@
                                Rp.{{ number_format($camp->price, 0, ', ', '.') }}
                             </h1>
                             <div class="item-benefit-pricing mb-4">
+                            @foreach ($camp->campBenefits as $benefit)
                                 <img src="{{ asset('images/ic_check.svg') }}" alt="">
                                 <p>
-                                    1-1 Mentoring Program
+                                    {{ $benefit->name }}
                                 </p>
                                 <div class="clear"></div>
                                 <div class="divider"></div>
-                            </div>
-                            <div class="item-benefit-pricing mb-4">
-                                <img src="{{ asset('images/ic_check.svg') }}" alt="">
-                                <p>
-                                    Final Project Certificate
-                                </p>
-                                <div class="clear"></div>
-                                <div class="divider"></div>
-                            </div>
-                            <div class="item-benefit-pricing mb-4">
-                                <img src="{{ asset('images/ic_check.svg') }}" alt="">
-                                <p>
-                                    Offline Course Videos
-                                </p>
-                                <div class="clear"></div>
-                                <div class="divider"></div>
-                            </div>
-                            <div class="item-benefit-pricing">
-                                <img src="{{ asset('images/ic_check.svg') }}" alt="">
-                                <p>
-                                    Future Job Opportinity
-                                </p>
-                                <div class="clear"></div>
+                            @endforeach
+                             
                             </div>
                             <p>
                                 <a href="{{ route('checkout.create', $camp->slug) }}" class="btn btn-master btn-success w-100 mt-3">

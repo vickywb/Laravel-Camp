@@ -2,27 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CampBenefit;
+use App\Repositories\CampBenefitRepository;
+use App\Repositories\CampRepository;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    private $campRepository;
+    private $campBenefitRepository;
+    
+    public function __construct(
+        CampRepository $campRepository,
+        CampBenefitRepository $campBenefitRepository
+    )
     {
-        $this->middleware('auth');
+       $this->campRepository = $campRepository;
+       $this->campBenefitRepository = $campBenefitRepository;
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        return view('index');
+        $camps = $this->campRepository->get([
+            'with' => ['campBenefits'],
+        ]);
+
+   
+        return view('index', [
+            'camps' => $camps,
+        ]);
     }
 }

@@ -1,12 +1,4 @@
-@extends('layouts.app', [
-    'headerTitle' => 'Index',
-    'activePage' => 'Index',
-    'breadcrumbs' => [
-        [
-        'title' => 'Laracamp'
-        ]
-    ]
-])
+@extends('layouts.app')
 @section('content')
 
     {{-- Banner Page --}}

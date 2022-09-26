@@ -15,16 +15,19 @@
                     <a class="nav-link" href="{{ route('admin.camp.index') }}">Camp</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
+                    <a class="nav-link" href="{{ route('admin.camp-benefit.index') }}">Camp Benefits</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Business</a>
+                    <a class="nav-link" href="{{ route('admin.transaction.index') }}">Transaction</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.discount.index') }}">Discount</a>
                 </li>
             </ul>
             @auth
                 <div class="d-flex user-logged nav-item dropdown no-arrow">
                     <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                        Halo, {{ auth()->user()->name }} !
+                        Halo, {{ Auth::user()->name }} !
                         <img src="{{ auth()->user()->userProfile->fileUrl ?? asset('images/user_photo.png') }}" class="user-photo rounded-circle" alt="">
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="right: 0, left: auto;">
