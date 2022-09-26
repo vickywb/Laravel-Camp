@@ -19,6 +19,11 @@ class Camp extends Model
     {
         return $this->hasMany(CampBenefit::class);
     }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     //Attribute
     public function getIsRegisteredAttribute()

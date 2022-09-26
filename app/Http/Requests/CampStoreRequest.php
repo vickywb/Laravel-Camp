@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CheckoutStoreRequest extends FormRequest
+class CampStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,8 @@ class CheckoutStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'discount' => 'nullable|string|exists:discounts,code,deleted_at,NULL'
+            'title' => 'required|max:35|string|unique:camps,title',
+            'price' => 'required|numeric'
         ];
     }
 }
