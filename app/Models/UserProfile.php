@@ -21,7 +21,7 @@ class UserProfile extends Model
 
     public function file()
     {
-        return $this->belongsTo(File::class);
+        return $this->belongsTo(File::class, 'file_id');
     }
 
     //Accessor

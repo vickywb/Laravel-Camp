@@ -24,7 +24,7 @@ class ProcessUploadFile
 
         //Merge the filename to column to request
         $request->merge([
-            $params['field_name'] = $fullFileName
+            $params['field_name'] => $fullFileName
         ]);
 
         //Merge FileName

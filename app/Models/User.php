@@ -27,7 +27,6 @@ class User extends Authenticatable
         'role',
         'occupation',
         'email_verified_at'
-
     ];
 
     /**
@@ -63,5 +62,10 @@ class User extends Authenticatable
     public function providers()
     {
         return $this->hasMany(Provider::class);
+    }
+
+    public function camps()
+    {
+        return $this->hasMany(Camp::class);
     }
 }

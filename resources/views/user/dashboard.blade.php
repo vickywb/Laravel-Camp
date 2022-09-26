@@ -14,82 +14,55 @@
             </div>
         </div>
         <div class="row my-5">
+            @include('partials._messages')
             <table class="table">
                 <tbody>
+                    @foreach ($checkouts as $checkout)
                     <tr class="align-middle">
                         <td width="18%">
                             <img src="{{ asset('images/item_bootcamp.png') }}" height="120" alt="">
                         </td>
                         <td>
                             <p class="mb-2">
-                                <strong>Gila Belajar</strong>
+                                <strong>{{ $checkout->camp->title }}</strong>
                             </p>
                             <p>
-                                September 24, 2021
+                                {{ $checkout->created_at->format('M d, Y') }}
                             </p>
                         </td>
+                        @if (!$checkout->discount)
                         <td>
-                            <strong>$280,000</strong>
+                            <p class="mb-2">Normal Price</p>
+                            <p><strong>Rp.{{ number_format($checkout->camp->price, 0, ', ', '.') }}</strong></p>
+                        </td>
+                        @else
+                            <td>   
+                                <p class="mb-2 text-danger">Discount Price</p>
+                                <p><strong>Rp.{{ number_format($checkout->total, 0, ', ', '.') }}</strong></p>
+                            </td>
+                        @endif
+                        <td>
+                            @if ($checkout->payment_status != "success")
+                                <strong class="text-danger">{{ $checkout->payment_status }}</strong>
+                            @else
+                                <strong class="text-success">{{ $checkout->payment_status }}</strong>
+                            @endif
                         </td>
                         <td>
-                            <strong>Waiting for Payment</strong>
+                            @if ($checkout->payment_status != "success")
+                               <a href="{{ $checkout->midtrans_url }}" class="btn btn-primary">Pay Here!</a>
+                            @endif
                         </td>
                         <td>
-                            <a href="#" class="btn btn-primary">
-                                Get Invoice
+                            <a href="https://wa.me/08xxxxxxxx?text=Hi, Saya ingin bertanya tentang kelas {{ $checkout->camp->title }}" class="btn btn-primary">
+                                Contact Support
                             </a>
                         </td>
                     </tr>
-                    <tr class="align-middle">
-                        <td width="18%">
-                            <img src="{{ asset('images/item_bootcamp.png') }}" height="120" alt="">
-                        </td>
-                        <td>
-                            <p class="mb-2">
-                                <strong>Gila Belajar</strong>
-                            </p>
-                            <p>
-                                September 24, 2021
-                            </p>
-                        </td>
-                        <td>
-                            <strong>$280,000</strong>
-                        </td>
-                        <td>
-                            <strong><span class="text-green">Payment Success</span></strong>
-                        </td>
-                        <td>
-                            <a href="#" class="btn btn-primary">
-                                Get Invoice
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="align-middle">
-                        <td width="18%">
-                            <img src="{{ asset('images/item_bootcamp.png') }}" height="120" alt=" ">
-                        </td>
-                        <td>
-                            <p class=" mb-2 ">
-                                <strong>Gila Belajar</strong>
-                            </p>
-                            <p>
-                                September 24, 2021
-                            </p>
-                        </td>
-                        <td>
-                            <strong>$280,000</strong>
-                        </td>
-                        <td>
-                            <strong><span class="text-red ">Canceled</span></strong>
-                        </td>
-                        <td>
-                            <a href="# " class="btn btn-primary ">
-                                Get Invoice
-                            </a>
-                        </td>
-                    </tr>
+                    @endforeach
                 </tbody>
             </table>
+            {{ $checkouts->links('components.pagination') }}
         </div>
     </div>
 </section>

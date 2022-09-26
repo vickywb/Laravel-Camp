@@ -23,7 +23,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="right: 0, left: auto;">
                         <li>
-                            <a href="{{ route('user.change-profile') }}" class="dropdown-item">Change Profile</a>
+                            <a href="{{ route('user.change-profile', auth()->user()->id ) }}" class="dropdown-item">Change Profile</a>
                         </li>
                         <li>
                             <a href="{{ route('user.change-password') }}" class="dropdown-item">Change Password</a>

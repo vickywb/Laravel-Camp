@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UploadProfileRequest;
 use App\Http\Requests\UserChangePasswordRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Processor\ProcessUploadFile;
 use App\Repositories\FileRepository;
 use App\Repositories\UserProfileRepository;
 use App\Repositories\UserRepository;
@@ -13,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {   
@@ -72,11 +75,6 @@ class AuthController extends Controller
         ]);
     }
 
-    public function uploadProfile()
-    {
-        
-    }
-    
     public function userStoreData(UserRegisterRequest $request, User $user)
     {   
         $request->merge([
@@ -124,6 +122,70 @@ class AuthController extends Controller
         return view('user.profile', [
             'user' => $user
        ]);
+    }
+    
+    public function uploadProfile(UploadProfileRequest $request, User $user)
+    {   
+        // $user = auth()->user();
+        // dd($user->userProfile->file->fileUrl);
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image')->get();
+
+            new ProcessUploadFile($file, [
+                'field_name' => 'location',
+                'extension' => $request->file('image')->getClientOriginalExtension(),
+                'location' => 'profile/'
+            ], $request);
+
+            $uploadedFile = $this->fileRepository->store($request->only('location'));
+
+            $request->merge([
+                'file_id' => $uploadedFile->id
+            ]);
+
+            if ($user->userProfile->file_id) {
+                $oldFileName = $user->userProfile->file->location;
+            }
+
+            if (isset($oldFileName)) {
+                Storage::delete($oldFileName);
+            }
+    
+        } else {
+            $request->merge([
+                'file_id' => $user->userProfile->file_id
+            ]);
+        }
+  
+        $data = $request->only([
+            'name', 'occupation', 'file_id', 'image', 'address', 'phone_number'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $user = $user->fill($data);
+            $user = $this->userRepository->store($user);
+
+            $user->userProfile()->update([
+                'file_id' => $data['file_id'],
+                'address' => $data['address'],
+                'phone_number' => $data['phone_number'] 
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return redirect()->back()->withErrors([
+                'errors' => $th->getMessage()
+            ]);
+        }
+
+        return redirect()->route('user.dashboard')->with([
+            'success' => 'Your Profile has been updated.'
+        ]);
     }
 
     public function userChangePassword()
