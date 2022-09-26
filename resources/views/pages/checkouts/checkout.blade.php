@@ -49,6 +49,15 @@
                                 </span>
                                 @enderror
                             </div>
+                            <div class="mb-4">
+                                <label for="InputDiscount" class="form-label">Discount</label>
+                                <input type="text" name="discount" class="form-control @error('discount') is-invalid @enderror" id="InputDiscount" value="{{ old('discount') }}">
+                                @error('discount')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
                             {{-- <div class="mb-4">
                                 <label for="InputPhoneNumber" class="form-label">Phone Number</label>
                                 <input type="text" pattern="\d*" maxlength="20" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" id="InputPhoneNumber" value="{{ old('phone_number') }}">

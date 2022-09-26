@@ -22,6 +22,9 @@ class CheckoutRepository
             ->when(!empty($params['user_id']), function ($query) use ($params) {
                 return $query->where('user_id', $params['user_id']);
             })
+            ->when(!empty($params['payment_status']), function ($query) use ($params) {
+                return $query->where('payment_status', $params['payment_status']);
+            })
             ->when(!empty($params['order']), function ($query) use ($params) {
                 return $query->orderByRaw($params['order']);
             });

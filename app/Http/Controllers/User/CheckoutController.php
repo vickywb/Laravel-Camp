@@ -7,10 +7,17 @@ use App\Http\Requests\CheckoutStoreRequest;
 use App\Mail\Checkout\AfterCheckout;
 use App\Models\Camp;
 use App\Models\Checkout;
+use App\Models\Discount;
+use App\Models\Transaction_Detail;
+use App\Models\TransactionDetail;
+use App\Models\UserProfile;
 use App\Repositories\CheckoutRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Midtrans;
+use Midtrans\Notification;
 
 class CheckoutController extends Controller
 {   
@@ -19,6 +26,10 @@ class CheckoutController extends Controller
     public function __construct(CheckoutRepository $checkoutRepository)
     {
         $this->checkoutRepository = $checkoutRepository;
+        Midtrans\Config::$serverKey = config('services.midtrans.serverKey');
+        Midtrans\Config::$isProduction = config('services.midtrans.isProduction');
+        Midtrans\Config::$isSanitized = config('services.midtrans.isSanitized');
+        Midtrans\Config::$is3ds = config('services.midtrans.is3ds');
     }
 
     public function create(Request $request, Camp $camp)
@@ -35,16 +46,47 @@ class CheckoutController extends Controller
 
     public function store(CheckoutStoreRequest $request, Camp $camp)
     {   
+        // dd($request->all());
         $user = auth()->user();
-       
+        $price = (int) $camp->price;
+        $discountPrice = 0;
+        $total = $price;
+
+        if ($request->discount) {
+            $discount = Discount::whereCode($request->discount)->first();
+
+            if ($discount->type == 'percentage') {
+                $discountPrice = $price * $discount->amount / 100;
+                $discountAmount = $discount->amount;
+                $total = $price - $discountPrice;
+
+                $request->merge([
+                    'discount_id' => $discount->id,
+                    'discount_amount' => $discountAmount,
+                ]);
+
+            } else {
+                $discountPrice = $price - $discount->amount;
+                $discountAmount = $discount->amount;
+                $total = $discountPrice;
+
+                $request->merge([
+                    'discount_id' => $discount->id,
+                    'discount_amount' => $discountAmount,
+                ]);
+
+            }
+        }
+
         $request->merge([
             'user_id' => $user->id,
-            'camp_id' => $camp->id
+            'camp_id' => $camp->id,
+            'total' => $total
         ]);
 
         $data = $request->only([
-            'name', 'email', 'user_id', 'camp_id', 'card_number',
-            'cvc', 'expired_date'
+            'name', 'email', 'user_id', 'camp_id', 'discount',
+            'discount_id', 'discount_amount', 'total'
         ]);
 
         try {
@@ -52,6 +94,17 @@ class CheckoutController extends Controller
 
             $checkout = new Checkout($data);
             $checkout = $this->checkoutRepository->store($checkout);
+
+            $checkoutDetail = TransactionDetail::create([
+                'checkout_id' => $checkout->id,
+                'price' => $checkout->camp->price,
+                'discount_amount' => $checkout->discount_amount,
+                'total' => $checkout->total
+            ]);
+
+            $checkoutDetail->save();
+
+            $this->getSnapRedirect($checkout);
 
             //sending email
             Mail::to(auth()->user()->email)->send(new AfterCheckout($checkout));
@@ -66,6 +119,164 @@ class CheckoutController extends Controller
         }
 
         return redirect()->route('checkout.success');
+    }
+
+    //Midtrans Handler
+    public function getSnapRedirect(Checkout $checkout)
+    {   
+        $orderId =  'CAMP' . '-' . $checkout->id . mt_rand(0000, 9999);
+        $price = (int) $checkout->camp->price;
+
+        $checkout->midtrans_booking_code = $orderId;
+
+       $discountPrice = 0;
+        
+        $itemDetails[] = [
+            'id' => $orderId,
+            'price' => $price,
+            'quantity' => 1,
+            'name' => "Payment for {$checkout->camp->title} Camp",
+        ];
+
+        if ($checkout->discount) {
+            if ($checkout->discount->type == 'percentage') {
+                $discountPrice = $price * $checkout->discount->amount / 100;
+                $discountAmount = $checkout->discount_amount * $price / 100;
+                $discount = number_format($checkout->discount->amount, 0, ', ', '.');
+                $total = $price - $discountPrice;
+                $itemDetails[] = [
+                    'id' => $checkout->discount->code,
+                    'price' => -$discountAmount,
+                    'quantity' => 1,
+                    'name' => "Discount {$checkout->discount->title} ({$discount} %)",
+                ];
+            
+            } else {
+                $discountPrice = $price - $checkout->discount->amount;
+                $discountAmount = $checkout->discount->amount;
+                $discount = number_format($checkout->discount->amount, 0, ', ', '.');
+                $total = $price - $discountPrice;
+                $itemDetails[] = [
+                    'id' => $checkout->discount->code,
+                    'price' => -$discountAmount,
+                    'quantity' => 1,
+                    'name' => "Discount {$checkout->discount->title} ({$discount})",
+                ];
+            }
+        }
+
+        $total = $price - $discountPrice;
+
+        $transactionDetails = [
+            'order_id' => $orderId,
+            'gross_amount' => $total
+        ];
+
+        $userData = [
+            'first_name' => $checkout->name,
+            'last_name' => '',
+            'address' => $checkout->user->userProfile->address,
+            'country_code' => 'IDN',
+        ];
+
+        $customerDetails = [
+            'first_name' => $checkout->name,
+            'last_name' => '',
+            'email' => $checkout->email,
+            'phone' => $checkout->user->userProfile->phone_number,
+            'billing_address' => $userData,
+            'shipping_address' => $userData
+        ];
+
+        $midtrans_params = [
+            'transaction_details' => $transactionDetails,
+            'customer_details' => $customerDetails,
+            'item_details' => $itemDetails
+        ];
+
+        try {
+            DB::beginTransaction();
+
+            $paymentUrl = \Midtrans\Snap::createTransaction($midtrans_params)->redirect_url;
+            $checkout->midtrans_url = $paymentUrl;
+            $checkout->save();
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            dd($th);
+            DB::rollBack();
+
+           return false;
+        }
+
+        return $paymentUrl;
+    }
+
+    public function midtransCallback(Request $request)
+    {   
+        //Instance notification midtrans
+        $notification = $request->method() == 'POST' ? new Midtrans\Notification() : Midtrans\Transaction::status($request->order_id);
+
+        //Assign Variable
+        $transactionStatus = $notification->transaction_status;
+        $fraudStatus = $notification->fraud_status;
+
+        $checkout_id = explode('-', $notification->order_id) [0];
+        $checkout = Checkout::find($checkout_id);
+
+        if ($transactionStatus == 'capture') {
+            if ($fraudStatus == 'challenge') {
+                //TODO Set Payment status in merchant's database to 'challenge'
+                $checkout->payment_status = 'pending';
+
+            } else if ($fraudStatus == 'accept') {
+                //TODO Set Payment status in merchant's database to 'success'
+                
+                $checkout->payment_status = 'success';
+
+            }
+        } 
+        else if ($transactionStatus == 'cancel') {
+            if ($fraudStatus == 'challenge') {
+            //TODO Set Payment status in merchant's database to 'failed'
+                
+                $checkout->payment_status = 'failed';
+
+            } else if ($fraudStatus == 'accept') {
+            //TODO Set Payment status in merchant's database to 'failed'
+                
+                $checkout->payment_status = 'failed';
+
+            }
+        } 
+        else if ($transactionStatus == 'deny') {
+            //TODO Set Payment status in merchant's database to 'failed'
+            
+            $checkout->payment_status = 'failed';
+
+        } 
+        else if ($transactionStatus == 'settlement') {
+            //TODO Set Payment status in merchant's database to 'settlement'
+            
+            $checkout->payment_status = 'success';
+
+        } 
+        else if ($transactionStatus == 'pending') {
+            //TODO Set Payment status in merchant's database to 'pending'
+            
+            $checkout->payment_status = 'pending';
+
+        } 
+        else if ($transactionStatus == 'expire') {
+            //TODO Set Payment status in merchant's database to 'failed'
+            
+            $checkout->payment_status = 'failed';
+
+        }
+
+        $checkout->save();
+        
+        return view('pages.checkouts.success-checkout');
     }
 
     public function success()

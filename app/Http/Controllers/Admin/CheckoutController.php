@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Checkout;
 use App\Repositories\CheckoutRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,13 +21,14 @@ class CheckoutController extends Controller
     public function updateCheckout(Request $request, Checkout $checkout)
     {   
         $request->merge([
-            'is_paid' => true
+          'payment_status' => 'success',
+          'created_at' => Carbon::now()
         ]);
 
         $data = $request->only([
-            'is_paid'
+            'payment_status', 'created_at'
         ]);
-
+        
       try {
         DB::beginTransaction();
 
