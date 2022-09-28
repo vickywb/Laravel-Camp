@@ -8,14 +8,11 @@ use App\Mail\Checkout\AfterCheckout;
 use App\Models\Camp;
 use App\Models\Checkout;
 use App\Models\Discount;
-use App\Models\Transaction_Detail;
 use App\Models\TransactionDetail;
-use App\Models\UserProfile;
 use App\Repositories\CheckoutRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Midtrans;
 use Midtrans\Notification;
 
@@ -46,7 +43,6 @@ class CheckoutController extends Controller
 
     public function store(CheckoutStoreRequest $request, Camp $camp)
     {   
-        // dd($request->all());
         $user = auth()->user();
         $price = (int) $camp->price;
         $discountPrice = 0;
@@ -55,26 +51,34 @@ class CheckoutController extends Controller
         if ($request->discount) {
             $discount = Discount::whereCode($request->discount)->first();
 
-            if ($discount->type == 'percentage') {
-                $discountPrice = $price * $discount->amount / 100;
-                $discountAmount = $discount->amount;
-                $total = $price - $discountPrice;
+            $code = Checkout::where('discount_id', $discount->id)
+                    ->where('user_id', auth()->user()->id)
+                    ->exists();
 
-                $request->merge([
-                    'discount_id' => $discount->id,
-                    'discount_amount' => $discountAmount,
-                ]);
-
+            //Checking discount, is user already use the code or not
+            if (!$code) {
+                if ($discount->type == 'percentage') {
+                    $discountPrice = $price * $discount->amount / 100;
+                    $discountAmount = $discount->amount;
+                    $total = $price - $discountPrice;
+    
+                    $request->merge([
+                        'discount_id' => $discount->id,
+                        'discount_amount' => $discountAmount,
+                    ]);
+    
+                } else {
+                    $discountPrice = $price - $discount->amount;
+                    $discountAmount = $discount->amount;
+                    $total = $discountPrice;
+    
+                    $request->merge([
+                        'discount_id' => $discount->id,
+                        'discount_amount' => $discountAmount,
+                    ]);
+                }
             } else {
-                $discountPrice = $price - $discount->amount;
-                $discountAmount = $discount->amount;
-                $total = $discountPrice;
-
-                $request->merge([
-                    'discount_id' => $discount->id,
-                    'discount_amount' => $discountAmount,
-                ]);
-
+                return redirect()->back()->with('fail', 'This Code has been used.');
             }
         }
 

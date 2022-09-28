@@ -52,31 +52,22 @@
                             <div class="mb-4">
                                 <label for="InputDiscount" class="form-label">Discount</label>
                                 <input type="text" name="discount" class="form-control @error('discount') is-invalid @enderror" id="InputDiscount" value="{{ old('discount') }}">
+                           
+                                @if (session('fail'))
+                                    <div class="alert alert-light" role="alert" style="padding-top: 0%; padding-bottom:0%">
+                                        <strong><p class="text-danger" style="font-size: .875em;">{{ session('fail') }}</p></strong>
+                                    </div>
+                                @endif
+
                                 @error('discount')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                                 @enderror
                             </div>
-                            {{-- <div class="mb-4">
-                                <label for="InputPhoneNumber" class="form-label">Phone Number</label>
-                                <input type="text" pattern="\d*" maxlength="20" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" id="InputPhoneNumber" value="{{ old('phone_number') }}">
-                                @error('phone_number')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                            <div class="mb-4">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" id="address" value="{{ old('address') }}">
-                                @error('address')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div> --}}
-                            <button type="submit" class="w-100 btn btn-primary">Pay Now</button>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary" type="button" style="border-radius: 1em">Pay Now!</button>
+                              </div>
                             <p class="text-center subheader mt-4">
                                 <img src="{{ asset('images/ic_secure.svg') }}" alt=""> Your payment is secure and encrypted.
                             </p>
