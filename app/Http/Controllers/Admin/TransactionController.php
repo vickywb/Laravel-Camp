@@ -23,7 +23,6 @@ class TransactionController extends Controller
             'pagination' => 5
         ]);
 
-        // dd($checkouts);
         return view('admin.transactions.index', [
             'checkouts' => $checkouts
         ]);

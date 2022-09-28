@@ -126,9 +126,6 @@ class AuthController extends Controller
     
     public function uploadProfile(UploadProfileRequest $request, User $user)
     {   
-        // $user = auth()->user();
-        // dd($user->userProfile->file->fileUrl);
-
         if ($request->hasFile('image')) {
             $file = $request->file('image')->get();
 
