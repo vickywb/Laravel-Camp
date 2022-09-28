@@ -68,4 +68,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Camp::class);
     }
+
+    public function discounts()
+    {
+        return $this->hasMany(Discount::class);
+    }
 }

@@ -28,5 +28,8 @@ class Discount extends Model
         return $this->hasMany(Checkout::class);
     }
 
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
