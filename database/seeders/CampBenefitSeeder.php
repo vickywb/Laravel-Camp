@@ -21,7 +21,7 @@ class CampBenefitSeeder extends Seeder
             ],
             [
                 'camp_id' => 1,
-                'name' => 'iMac Pro 2021 & Display'
+                'name' => 'Introduce The Program'
             ],
             [
                 'camp_id' => 1,
@@ -40,11 +40,11 @@ class CampBenefitSeeder extends Seeder
                 'name' => 'Future Job Oppurtunity'
             ],
             [
-                'camp_id' => 1,
+                'camp_id' => 2,
                 'name' => 'Premium Design Kit'
             ],
             [
-                'camp_id' => 1,
+                'camp_id' => 2,
                 'name' => 'Website Builder'
             ],
             [
@@ -58,6 +58,46 @@ class CampBenefitSeeder extends Seeder
             [
                 'camp_id' => 2,
                 'name' => 'Final Project Certificate'
+            ],
+            [
+                'camp_id' => 2,
+                'name' => 'Representation your program to mentor'
+            ],
+            [
+                'camp_id' => 2,
+                'name' => 'Future Job Oppurtunity'
+            ],
+            [
+                'camp_id' => 3,
+                'name' => 'Profesional Design Kit'
+            ],
+            [
+                'camp_id' => 3,
+                'name' => 'Website Builder'
+            ],
+            [
+                'camp_id' => 3,
+                'name' => '1-1 Mentoring Program'
+            ],
+            [
+                'camp_id' => 3,
+                'name' => 'Offline Course Video'
+            ],
+            [
+                'camp_id' => 3,
+                'name' => 'Final Project Certificate'
+            ],
+            [
+                'camp_id' => 3,
+                'name' => 'Representation your program to mentor'
+            ],
+            [
+                'camp_id' => 3,
+                'name' => 'Future Job Oppurtunity'
+            ],
+            [
+                'camp_id' => 3,
+                'name' => 'Final Exam with mentor'
             ],
         ];
 
