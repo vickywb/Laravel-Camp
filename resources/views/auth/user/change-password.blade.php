@@ -3,7 +3,8 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-10 offset-1 mt-5">
+            @include('partials._messages')
             <div class="card mt-3">
                 <div class="card-header">
                     <span>Change Password</span>
@@ -62,7 +63,10 @@
                         </div>
                         
                         <div class="row mb-0">
-                            <div class="col-md-10">
+                            <div class="col-md-5">
+                              <a href="{{ route('user.dashboard') }}" class="btn btn-secondary col-md-12" style="border-radius: 1rem">Cancel</a>
+                            </div>
+                            <div class="col-md-5">
                                 <button type="submit" class="btn btn-primary col-md-12" style="border-radius: 1rem;">
                                     {{ __('Save New Password') }}
                                 </button>

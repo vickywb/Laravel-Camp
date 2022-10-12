@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Checkout;
 use App\Repositories\CheckoutRepository;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
-class UserController extends Controller
+class TransactionController extends Controller
 {
     private $checkoutRepository;
 
@@ -18,19 +16,6 @@ class UserController extends Controller
         $this->checkoutRepository = $checkoutRepository;
     }
     public function index()
-    {   
-        $checkouts = $this->checkoutRepository->get([
-            'with' => ['camp'],
-            'user_id' => auth()->user()->id,
-            'pagination' => 5
-        ]);
-        
-        return view('user.dashboard', [
-            'checkouts' => $checkouts
-        ]);
-    }
-
-    public function indexClasses()
     {
         $checkouts = $this->checkoutRepository->get([
             'with' => ['camp'],
@@ -38,8 +23,15 @@ class UserController extends Controller
             'pagination' => 5
         ]);
         
-        return view('user.classes.index', [
+        return view('user.transactions.index', [
             'checkouts' => $checkouts
+        ]);
+    }
+
+    public function show(Checkout $checkout)
+    {
+        return view('user.transactions.show', [
+            'checkout' => $checkout
         ]);
     }
 }

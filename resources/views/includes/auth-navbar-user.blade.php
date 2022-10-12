@@ -9,10 +9,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Program</a>
+                    <a class="nav-link active" aria-current="page" href="{{ route('user.dashboard') }}">Dasboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Mentor</a>
+                    <a class="nav-link" aria-current="page" href="{{ route('user.program.index') }}">Program</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('user.transaction.index') }}">Transaction</a>
                 </li>
             </ul>
             @auth

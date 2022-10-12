@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Midtrans;
-use Midtrans\Notification;
 
 class CheckoutController extends Controller
 {   
@@ -36,13 +35,16 @@ class CheckoutController extends Controller
             return redirect()->route('user.dashboard');
         }
 
+        $discounts = Discount::all();
+
         return view('pages.checkouts.checkout', [
-            'camp' => $camp
+            'camp' => $camp,
+            'discounts' => $discounts
         ]);
     }
 
     public function store(CheckoutStoreRequest $request, Camp $camp)
-    {   
+    {
         $user = auth()->user();
         $price = (int) $camp->price;
         $discountPrice = 0;
@@ -55,7 +57,7 @@ class CheckoutController extends Controller
                     ->where('user_id', auth()->user()->id)
                     ->exists();
 
-            //Checking discount, is user already use the code or not
+            //Discount check, is user already use the discount or not
             if (!$code) {
                 if ($discount->type == 'percentage') {
                     $discountPrice = $price * $discount->amount / 100;
@@ -85,7 +87,7 @@ class CheckoutController extends Controller
         $request->merge([
             'user_id' => $user->id,
             'camp_id' => $camp->id,
-            'total' => $total
+            'total' => $total,
         ]);
 
         $data = $request->only([
@@ -95,15 +97,15 @@ class CheckoutController extends Controller
 
         try {
             DB::beginTransaction();
-
             $checkout = new Checkout($data);
             $checkout = $this->checkoutRepository->store($checkout);
 
             $checkoutDetail = TransactionDetail::create([
                 'checkout_id' => $checkout->id,
+                'payment_status' => TransactionDetail::PENDING,
                 'price' => $checkout->camp->price,
                 'discount_amount' => $checkout->discount_amount,
-                'total' => $checkout->total
+                'total' => $checkout->total,
             ]);
 
             $checkoutDetail->save();
@@ -128,12 +130,12 @@ class CheckoutController extends Controller
     //Midtrans Handler
     public function getSnapRedirect(Checkout $checkout)
     {   
-        $orderId =  'CAMP' . '-' . $checkout->id . mt_rand(0000, 9999);
+        $orderId =  'CAMP' . '-' . mt_rand(0000, 9999) . '-' . $checkout->id;
         $price = (int) $checkout->camp->price;
 
-        $checkout->midtrans_booking_code = $orderId;
+        $checkout->transaction_code = $orderId;
 
-       $discountPrice = 0;
+        $discountPrice = 0;
         
         $itemDetails[] = [
             'id' => $orderId,
@@ -207,17 +209,18 @@ class CheckoutController extends Controller
 
             DB::commit();
         } catch (\Throwable $th) {
-            dd($th);
             DB::rollBack();
 
-           return false;
+           return redirect()->back()->withErrors([
+            'errors' => $th->getMessage()
+           ]);
         }
 
         return $paymentUrl;
     }
 
     public function midtransCallback(Request $request)
-    {   
+    {
         //Instance notification midtrans
         $notification = $request->method() == 'POST' ? new Midtrans\Notification() : Midtrans\Transaction::status($request->order_id);
 
@@ -225,66 +228,58 @@ class CheckoutController extends Controller
         $transactionStatus = $notification->transaction_status;
         $fraudStatus = $notification->fraud_status;
 
-        $checkout_id = explode('-', $notification->order_id) [0];
-        $checkout = Checkout::find($checkout_id);
+        $checkout_id = explode('-', $notification->order_id) [2];
+        $checkout = $this->checkoutRepository->findByColumn($checkout_id, 'id');
 
         if ($transactionStatus == 'capture') {
             if ($fraudStatus == 'challenge') {
                 //TODO Set Payment status in merchant's database to 'challenge'
                 $checkout->payment_status = 'pending';
-
             } else if ($fraudStatus == 'accept') {
                 //TODO Set Payment status in merchant's database to 'success'
-                
                 $checkout->payment_status = 'success';
-
             }
-        } 
+        }
         else if ($transactionStatus == 'cancel') {
             if ($fraudStatus == 'challenge') {
             //TODO Set Payment status in merchant's database to 'failed'
-                
                 $checkout->payment_status = 'failed';
-
             } else if ($fraudStatus == 'accept') {
             //TODO Set Payment status in merchant's database to 'failed'
-                
                 $checkout->payment_status = 'failed';
-
             }
-        } 
+        }
         else if ($transactionStatus == 'deny') {
             //TODO Set Payment status in merchant's database to 'failed'
-            
             $checkout->payment_status = 'failed';
-
-        } 
+        }
         else if ($transactionStatus == 'settlement') {
             //TODO Set Payment status in merchant's database to 'settlement'
-            
             $checkout->payment_status = 'success';
-
-        } 
+        }
         else if ($transactionStatus == 'pending') {
             //TODO Set Payment status in merchant's database to 'pending'
-            
             $checkout->payment_status = 'pending';
-
-        } 
+        }
         else if ($transactionStatus == 'expire') {
             //TODO Set Payment status in merchant's database to 'failed'
-            
             $checkout->payment_status = 'failed';
-
         }
 
         $checkout->save();
         
-        return view('pages.checkouts.success-checkout');
+        return view('pages.checkouts.success-payment');
     }
 
     public function success()
     {
         return view('pages.checkouts.success-checkout');
+    }
+
+    public function manualPayment(Checkout $checkout)
+    {
+        return view('pages.checkouts.manual-payment', [
+            'checkout' => $checkout
+        ]);
     }
 }

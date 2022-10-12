@@ -11,6 +11,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\User\CheckoutController;
+use App\Http\Controllers\User\TransactionController as UserTransactionController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -47,7 +48,7 @@ Auth::routes();
     Route::get('/facebook/login', [OAuthController::class, 'facebookLogin'])->name('user.facebook-login');
     Route::get('/auth/facebook/callback', [OAuthController::class, 'handleFacebookProviderCallback'])->name('user.facebook-callback');
 
-    //Midtrans routes
+    //Midtrans Payment
     Route::get('/payment/success', [CheckoutController::class, 'midtransCallback']);
     Route::post('/payment/success', [CheckoutController::class, 'midtransCallback']);
 
@@ -63,10 +64,21 @@ Auth::routes();
             Route::patch('/{user}/upload-profile', [AuthController::class, 'uploadProfile'])->name('user.upload-profile');
             Route::post('/store-password', [AuthController::class, 'storePassword'])->name('user.store-password');
 
-            //Checkout
+            //Checkout Camp
             Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
             Route::get('/checkout/{camp:slug}', [CheckoutController::class, 'create'])->name('checkout.create');
             Route::post('/checkout/{camp}', [CheckoutController::class, 'store'])->name('checkout.store');
+
+            // Manual Payment
+            Route::get('/checkout/{checkout}/payment', [CheckoutController::class, 'manualPayment'])->name('checkout.manual-payment');
+            // Route::post('/checkout/{camp}', [CheckoutController::class, 'manualPayment'])->name('checkout.manual-payment');
+
+            //Transactions
+            Route::get('/transactions', [UserTransactionController::class, 'index'])->name('user.transaction.index');
+            Route::get('/transaction/{checkout}/detail', [UserTransactionController::class, 'show'])->name('user.transaction.detail');
+
+            //Program
+            Route::get('/classes', [UserController::class, 'indexClasses'])->name('user.program.index');
         });
     });
 
@@ -98,7 +110,6 @@ Auth::routes();
                 Route::get('/camp/benefits/{camp_benefit}/edit', [CampBenefitController::class, 'edit'])->name('admin.camp-benefit.edit');
                 Route::patch('/camp/benefits/{camp_benefit}/update', [CampBenefitController::class, 'update'])->name('admin.camp-benefit.update');
                 Route::delete('/camp/benefits/{camp_benefit}/delete', [CampBenefitController::class, 'destroy'])->name('admin.camp-benefit.delete');
-
 
                 //Discounts
                 Route::get('/discounts', [DiscountController::class, 'index'])->name('admin.discount.index');

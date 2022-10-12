@@ -6,7 +6,7 @@
         <div class="row text-left">
             <div class=" col-lg-12 col-12 header-wrap mt-4">
                 <p class="story">
-                    Dashboard
+                    Program Dashboard
                 </p>
                 <h2 class="primary-header ">
                     My Bootcamps
@@ -26,18 +26,6 @@
                             <p class="mb-2">
                                 <strong>{{ $checkout->camp->title }}</strong>
                             </p>
-                        </td>
-                        <td>
-                            @if ($checkout->payment_status != 'success')
-                                <strong class="text-danger">{{ $checkout->payment_status }}</strong>
-                            @else
-                                <strong class="text-success">{{ $checkout->payment_status }}</strong>
-                            @endif
-                        </td>
-                        <td>
-                            <a href="https://wa.me/08xxxxxxxx?text=Hi, Saya ingin bertanya tentang kelas {{ $checkout->camp->title }}" class="btn btn-primary">
-                                Contact Support
-                            </a>
                         </td>
                     </tr>
                     @endforeach

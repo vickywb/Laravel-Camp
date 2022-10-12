@@ -37,7 +37,6 @@
                                 <div class="clear"></div>
                                 <div class="divider"></div>
                             @endforeach
-                             
                             </div>
                             <p>
                                 <a href="{{ route('checkout.create', $camp->slug) }}" class="btn btn-master btn-success w-100 mt-3">

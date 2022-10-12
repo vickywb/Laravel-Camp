@@ -14,9 +14,9 @@
                 <h2 class="primary-header ">
                    Checkout Success
                 </h2>
-                <p>Please, Make a Payment now </p>
-                <a href="{{ route('user.transaction.index') }}" class="btn btn-primary mt-3">
-                    Transaction Dashboard
+                <p>Thankyou for buying this Camp </p>
+                <a href="{{ route('user.dashboard') }}" class="btn btn-primary mt-3">
+                    My Dashboard
                 </a>
             </div>
         </div>

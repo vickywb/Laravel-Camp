@@ -25,7 +25,7 @@ class DiscountSeeder extends Seeder
                 'title' => 'Middle Dev',
                 'code' => 'MIDDEV',
                 'type' => 'fixed',
-                'amount' => 50.000
+                'amount' => 50000
             ],
             [
                 'title' => 'Senior Dev',

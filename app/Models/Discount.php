@@ -32,4 +32,13 @@ class Discount extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    //Attribute
+    public function getUsedDiscountAttribute()
+    {
+        $user = auth()->user()->id;
+        $discountCheck = Checkout::whereDiscountId($this->id)->whereUserId($user)->count() < 1;
+
+        return $discountCheck;
+    }
 }
