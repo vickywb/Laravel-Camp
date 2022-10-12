@@ -187,7 +187,8 @@ body {
 }
 
 .pricing .paket-biasa {
-  min-height: 453px;
+  min-height: 70%;
+  min-width: none;
 }
 
 .clear {

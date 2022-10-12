@@ -14,7 +14,7 @@ class AddDiscountIdDiscountHistoryAndTotalInCheckoutsTable extends Migration
     public function up()
     {
         Schema::table('checkouts', function (Blueprint $table) {
-            $table->integer('discount_id')->unsigned()->nullable()->after('midtrans_booking_code');
+            $table->integer('discount_id')->unsigned()->nullable()->after('transaction_code');
             $table->decimal('discount_amount', 16, 2)->nullable()->after('discount_id');
             $table->decimal('total', 16, 2)->default(0)->after('discount_amount');
 
