@@ -12,15 +12,18 @@ class Checkout extends Model
 
     protected $fillable = [
         'user_id', 'camp_id', 'name', 'email', 'payment_status', 'midtrans_url',
-        'midtrans_booking_code', 'discount_id', 'discount_amount', 'total'
+        'transaction_code', 'discount_id', 'discount_amount', 'total',
     ];
 
     // protected $casts = [
     //     'expired_date' => 'datetime',
     // ];
 
-    // const PENDING = 'pending';
-    // const SUCCESS = 'success';
+    const PENDING = 'pending';
+    const SUCCESS = 'success';
+
+    const MIDTRANS = 'midtrans';
+    const MANUAL = 'manual';
 
     //Relationship
     public function user()
@@ -36,6 +39,11 @@ class Checkout extends Model
     public function discount()
     {
         return $this->belongsTo(Discount::class);
+    }
+
+    public function transaction()
+    {
+        return $this->hasOne(TransactionDetail::class);
     }
 
     //Attribute
@@ -93,5 +101,29 @@ class Checkout extends Model
         $pendingTransaction = $this->where('payment_status', 'pending')->count();
         
         return $pendingTransaction;
+    }
+
+    public function getPaymentTimeExpiredAttribute()
+    {
+        $expiredTime = Carbon::parse($this->created_at)->addDays(1)->format('M j Y H:i');
+     
+        return $expiredTime;
+    }
+
+    public function getDiscountTypeAttribute()
+    {
+        $price = (int) $this->camp->price;
+
+        if ($this->discount) {
+            if ($this->discount->type == 'percentage') {
+                $discountAmount = $this->discount_amount * $price / 100;
+                $total = $discountAmount;
+            } else {
+                $discountAmount = $this->discount->amount;
+                $total = $discountAmount;
+            }
+        }
+
+        return $total;
     }
 }

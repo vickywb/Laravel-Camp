@@ -16,7 +16,7 @@ class AddPaymentStatusMidtransUrlAndMidtransBookingCodeInCheckoutsTable extends 
         Schema::table('checkouts', function (Blueprint $table) {
             $table->string('payment_status', 100)->default('pending')->after('email');
             $table->string('midtrans_url')->nullable()->after('payment_status');
-            $table->string('midtrans_booking_code')->nullable()->after('midtrans_url');
+            $table->string('transaction_code')->nullable()->after('midtrans_url');
         });
     }
 
@@ -30,7 +30,9 @@ class AddPaymentStatusMidtransUrlAndMidtransBookingCodeInCheckoutsTable extends 
         Schema::table('checkouts', function (Blueprint $table) {
             $table->dropColumn('payment_status');
             $table->dropColumn('midtrans_url');
-            $table->dropColumn('midtrans_booking_code');
+            $table->dropColumn('payment_method');
+            $table->dropColumn('transaction_code');
+            $table->dropColumn('amount_paid');
         });
     }
 }

@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             CampSeeder::class,
             CampBenefitSeeder::class,
-            UserSeeder::class
+            UserSeeder::class,
+            DiscountSeeder::class
         ]);
         // \App\Models\User::factory(10)->create();
     }

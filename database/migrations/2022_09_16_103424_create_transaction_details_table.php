@@ -16,6 +16,7 @@ class CreateTransactionDetailsTable extends Migration
         Schema::create('transaction_details', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('checkout_id')->unsigned();
+            $table->string('payment_status');
             $table->decimal('price', 16, 2);
             $table->decimal('discount_amount', 16, 2)->nullable();
             $table->decimal('total', 16,2);
