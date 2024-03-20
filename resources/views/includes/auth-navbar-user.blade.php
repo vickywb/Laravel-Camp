@@ -28,9 +28,11 @@
                         <li>
                             <a href="{{ route('user.change-profile', auth()->user()->id ) }}" class="dropdown-item">Change Profile</a>
                         </li>
+                        @if (Auth::user()->provider_name != null)
                         <li>
                             <a href="{{ route('user.change-password') }}" class="dropdown-item">Change Password</a>
                         </li>
+                        @endif
                         <li>
                             <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit()">Sign Out</a>
                             <form action="{{ route('logout') }}" id="logout-form" method="POST" style="display: none">
