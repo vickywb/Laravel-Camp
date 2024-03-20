@@ -84,7 +84,6 @@ body {
 
 .testimonials {
   background: #F7F7FB;
-  margin-top: 370px;
   padding: 70px 0 70px 0;
 }
 
@@ -135,7 +134,7 @@ body {
   margin-top: 100px;
   background: #4D1DAB;
   padding-top: 70px;
-  max-height: 620px;
+  max-height: auto;
 }
 
 .pricing .copywriting {
@@ -189,6 +188,24 @@ body {
 .pricing .paket-biasa {
   min-height: 70%;
   min-width: none;
+}
+
+@media (max-width: 991px) {
+    .table-pricing{
+      width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .table-pricing{
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 660px) {
+   .table-pricing{
+    max-width: 100%;
+  }
 }
 
 .clear {

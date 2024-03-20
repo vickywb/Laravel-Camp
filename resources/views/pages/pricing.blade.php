@@ -1,7 +1,7 @@
 <section class="pricing">
     <div class="container">
-        <div class="row pb-50">
-            <div class="col-lg-5 col-12 header-wrap copywriting">
+        <div class="row">
+            <div class="col-lg-4 header-wrap copywriting">
                 <p class="story">
                     GOOD INVESTMENT
                 </p>
@@ -17,7 +17,7 @@
                     </a>
                 </p>
             </div>
-            <div class="col-sm-7 col-12">
+            <div class="col-md-8 col-12">
                 <div class="row">
                     @foreach ($camps as $camp)
                     <div class="col-md-4 col-8 mb-5">
@@ -47,11 +47,6 @@
                     </div>
                     @endforeach
                 </div>
-            </div>
-        </div>
-        <div class="row pb-70 mt-5">
-            <div class="col-lg-12 col-12 text-center">
-                <img src="{{ asset('images/brands.png') }}" height="30" alt="">
             </div>
         </div>
     </div>
