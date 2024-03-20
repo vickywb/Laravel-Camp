@@ -200,7 +200,7 @@
                                     </p>
                                     <p
                                     style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; padding-left:0.2em">
-                                    <b>Pikio</b>
+                                    <b>{{ Auth::user()->name }}</b>
                                 </p>
                                 </span>
                             </div>

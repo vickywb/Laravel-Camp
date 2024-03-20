@@ -24,7 +24,7 @@
             </div>
             <div class="col-lg-3 col-12">
                 <div class="item-benefit">
-                    <img src="images/ic_globe-1.png" class="icon" alt="">
+                    <img src="{{ asset('images/ic_globe-1.png') }}" class="icon" alt="">
                     <h3 class="title">
                         A.I Guideline
                     </h3>
